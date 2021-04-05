@@ -17,7 +17,7 @@ public class OverlapController : MonoBehaviour
     void Start()
     {
         // lManager = GameObject.FindObjectOfType<LManager>();
-        originalColor = LManager.Instance.currentObj.transform.GetComponent<Renderer>().material.color;
+        originalColor = this.transform.GetComponent<Renderer>().material.color;
     }
 
     void FixedUpdate()
