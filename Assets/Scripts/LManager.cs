@@ -20,6 +20,7 @@ public class LManager : MonoBehaviour
         if (currentObj)
         {
             MoveObject();
+            SnapToGrid();
             PlaceObject();
         }
         if(selectedObj){
@@ -27,7 +28,7 @@ public class LManager : MonoBehaviour
                 //Move
                 currentObj = selectedObj;
                 selectedObj = null;
-                MoveObject();
+                //MoveObject();
             }else if(Input.GetKeyDown(KeyCode.Delete)){
                 //Delete
                 Destroy(selectedObj);
@@ -38,6 +39,17 @@ public class LManager : MonoBehaviour
                 selectedObj.layer = 0;
                 selectedObj = null;
             }
+        }
+    }
+
+    private void SnapToGrid(){
+        if(Input.GetKey(KeyCode.LeftShift)){
+            //Debug.Log("Snapping");
+            var x = Mathf.Round(currentObj.transform.position.x);
+            var y = Mathf.Round(currentObj.transform.position.y) + 0.5f;
+            var z = Mathf.Round(currentObj.transform.position.z);
+            currentObj.transform.position = new Vector3(x, y, z);
+
         }
     }
 

@@ -50,7 +50,7 @@ public class OverlapController : MonoBehaviour
         //Use the GameObject's centre, half the size (as a radius) and rotation. This creates an invisible box around your GameObject.
         var currentObj = lManager.currentObj;
         if(currentObj != null){
-            Vector3 newScale = new Vector3(currentObj.transform.localScale.x, currentObj.transform.localScale.y - 0.01f, currentObj.transform.localScale.z);
+            Vector3 newScale = new Vector3(currentObj.transform.localScale.x - 0.01f, currentObj.transform.localScale.y - 0.01f, currentObj.transform.localScale.z - 0.01f);
             Collider[] hitColliders = Physics.OverlapBox(currentObj.transform.position, newScale / 2, Quaternion.identity, m_LayerMask);
             // if(!overlap){
             //     originalColor = lManager.currentObj.transform.GetComponent<Renderer>().material.color;
