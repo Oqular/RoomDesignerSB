@@ -4,16 +4,31 @@ using UnityEngine;
 
 public class LManager : MonoBehaviour
 {
+    public static LManager Instance { get; private set;}
+
     [SerializeField]
     private GameObject objPrefab;
+
 
     public GameObject currentObj;
     private GameObject selectedObj;
 
+    [SerializeField]
+    private GameObject selectionPanel;
+
+    void Awake(){
+        if(Instance == null){
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }else{
+            Destroy(gameObject);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        CreateObject();
+        //CreateObject();
 
         SelectExistingObj();
 
@@ -26,27 +41,23 @@ public class LManager : MonoBehaviour
         if(selectedObj){
             if(Input.GetKeyDown(KeyCode.M)){
                 //Move
-                currentObj = selectedObj;
-                selectedObj = null;
-                //MoveObject();
+                MoveButton();
             }else if(Input.GetKeyDown(KeyCode.Delete)){
                 //Delete
-                Destroy(selectedObj);
+                DestroyButton();
             }else if(Input.GetKeyDown(KeyCode.C)){
                 //Change color
             }else if(Input.GetKeyDown(KeyCode.Escape)){
                 //Cancel
-                selectedObj.layer = 0;
-                selectedObj = null;
+                CancelButton();
             }
         }
     }
-
     private void SnapToGrid(){
         if(Input.GetKey(KeyCode.LeftShift)){
             //Debug.Log("Snapping");
             var x = Mathf.Round(currentObj.transform.position.x);
-            var y = Mathf.Round(currentObj.transform.position.y) + 0.5f;
+            var y = Mathf.Round(currentObj.transform.position.y);
             var z = Mathf.Round(currentObj.transform.position.z);
             currentObj.transform.position = new Vector3(x, y, z);
 
@@ -54,7 +65,7 @@ public class LManager : MonoBehaviour
     }
 
     private void SelectExistingObj(){
-        if(Input.GetMouseButtonUp(0) && currentObj == null){
+        if(Input.GetMouseButtonDown(0) && currentObj == null){
             RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out hitInfo);
@@ -65,6 +76,7 @@ public class LManager : MonoBehaviour
                     //var parent = child.transform.parent.gameObject;
                     selectedObj = hitInfo.transform.gameObject;
                     hitInfo.transform.gameObject.layer = 2;
+                    OpenSelectionBox(true);
                     //Debug.Log(child + "  " + parent);
                 }
             }
@@ -72,12 +84,12 @@ public class LManager : MonoBehaviour
         }
     }
 
-    private void CreateObject(){
-        if (Input.GetKeyDown(KeyCode.Q))
+   public void CreateObject(GameObject gameObj){
+        if (selectedObj == null)
         {
             if (currentObj == null)
             {
-                currentObj = Instantiate(objPrefab);
+                currentObj = Instantiate(gameObj);
                 currentObj.tag = "Player";
             }
             else
@@ -103,7 +115,7 @@ public class LManager : MonoBehaviour
     private void PlaceObject()
     {
         OverlapController overlapController = currentObj.GetComponent<OverlapController>();
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(0))
         {
             if(!overlapController.overlap){
                 currentObj.layer = 0;
@@ -113,5 +125,28 @@ public class LManager : MonoBehaviour
             // GameObject child = currentObj.transform.GetChild(0).gameObject;
             // child.layer = 0;
         }
+    }
+
+    private void OpenSelectionBox(bool selected){
+        selectionPanel.SetActive(selected);
+    }
+
+    //button clicks
+    public void MoveButton(){
+        // Debug.Log("Fat move");
+        currentObj = selectedObj;
+        selectedObj = null;
+        MoveObject();
+    }
+
+    public void DestroyButton(){
+        OpenSelectionBox(false);
+        Destroy(selectedObj); 
+    }
+
+    public void CancelButton(){
+        OpenSelectionBox(false);
+        selectedObj.layer = 0;
+        selectedObj = null;
     }
 }
