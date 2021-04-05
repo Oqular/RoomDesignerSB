@@ -8,6 +8,7 @@ public class LManager : MonoBehaviour
     private GameObject objPrefab;
 
     public GameObject currentObj;
+    private GameObject selectedObj;
 
     // Update is called once per frame
     void Update()
@@ -21,6 +22,23 @@ public class LManager : MonoBehaviour
             MoveObject();
             PlaceObject();
         }
+        if(selectedObj){
+            if(Input.GetKeyDown(KeyCode.M)){
+                //Move
+                currentObj = selectedObj;
+                selectedObj = null;
+                MoveObject();
+            }else if(Input.GetKeyDown(KeyCode.Delete)){
+                //Delete
+                Destroy(selectedObj);
+            }else if(Input.GetKeyDown(KeyCode.C)){
+                //Change color
+            }else if(Input.GetKeyDown(KeyCode.Escape)){
+                //Cancel
+                selectedObj.layer = 0;
+                selectedObj = null;
+            }
+        }
     }
 
     private void SelectExistingObj(){
@@ -31,10 +49,10 @@ public class LManager : MonoBehaviour
             if(hit){
                 if(hitInfo.transform.gameObject.tag != "immovable"){
                     //currentObj = hitInfo.transform.parent.gameObject;
-                    var child = hitInfo.transform.gameObject;
+                    //var child = hitInfo.transform.gameObject;
                     //var parent = child.transform.parent.gameObject;
-                    currentObj = child;
-                    child.layer = 2;
+                    selectedObj = hitInfo.transform.gameObject;
+                    hitInfo.transform.gameObject.layer = 2;
                     //Debug.Log(child + "  " + parent);
                 }
             }
@@ -73,18 +91,15 @@ public class LManager : MonoBehaviour
     private void PlaceObject()
     {
         OverlapController overlapController = currentObj.GetComponent<OverlapController>();
-        if (Input.GetKey(KeyCode.Return))
+        if (Input.GetMouseButtonUp(0))
         {
-            
             if(!overlapController.overlap){
                 currentObj.layer = 0;
                 currentObj.tag = "Untagged";
                 currentObj = null;
             }
-            
             // GameObject child = currentObj.transform.GetChild(0).gameObject;
             // child.layer = 0;
-            
         }
     }
 }
