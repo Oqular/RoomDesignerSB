@@ -8,13 +8,16 @@ public class LManager : MonoBehaviour
 
     [SerializeField]
     private GameObject objPrefab;
-
+    [SerializeField]
+    private FlexibleColorPicker colorPicker;
 
     public GameObject currentObj;
     private GameObject selectedObj;
 
     [SerializeField]
     private GameObject selectionPanel;
+    [SerializeField]
+    private GameObject colorPanel;
 
     void Awake(){
         if(Instance == null){
@@ -47,6 +50,7 @@ public class LManager : MonoBehaviour
                 DestroyButton();
             }else if(Input.GetKeyDown(KeyCode.C)){
                 //Change color
+                ColorButton();
             }else if(Input.GetKeyDown(KeyCode.Escape)){
                 //Cancel
                 CancelButton();
@@ -65,7 +69,7 @@ public class LManager : MonoBehaviour
     }
 
     private void SelectExistingObj(){
-        if(Input.GetMouseButtonDown(0) && currentObj == null){
+        if(Input.GetMouseButtonUp(0) && currentObj == null){
             RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out hitInfo);
@@ -76,7 +80,7 @@ public class LManager : MonoBehaviour
                     //var parent = child.transform.parent.gameObject;
                     selectedObj = hitInfo.transform.gameObject;
                     hitInfo.transform.gameObject.layer = 2;
-                    OpenSelectionBox(true);
+                    OpenPanelBox(true, selectionPanel);
                     //Debug.Log(child + "  " + parent);
                 }
             }
@@ -127,26 +131,37 @@ public class LManager : MonoBehaviour
         }
     }
 
-    private void OpenSelectionBox(bool selected){
-        selectionPanel.SetActive(selected);
+    private void OpenPanelBox(bool selected, GameObject panel){
+        panel.SetActive(selected);
     }
 
     //button clicks
     public void MoveButton(){
-        // Debug.Log("Fat move");
         currentObj = selectedObj;
         selectedObj = null;
         MoveObject();
     }
 
     public void DestroyButton(){
-        OpenSelectionBox(false);
+        OpenPanelBox(false, selectionPanel);
         Destroy(selectedObj); 
     }
 
     public void CancelButton(){
-        OpenSelectionBox(false);
+        OpenPanelBox(false, selectionPanel);
         selectedObj.layer = 0;
         selectedObj = null;
+    }
+
+    public void ColorButton(){
+        OpenPanelBox(false, selectionPanel);
+        OpenPanelBox(true, colorPanel);
+    }
+
+    public void ChangeColor(){
+        selectedObj.GetComponent<Renderer>().material.color = colorPicker.color;
+        selectedObj.GetComponent<OverlapController>().originalColor = colorPicker.color;
+        OpenPanelBox(true, selectionPanel);
+        OpenPanelBox(false, colorPanel);
     }
 }

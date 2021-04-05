@@ -6,9 +6,9 @@ public class OverlapController : MonoBehaviour
 {
 
     public bool overlap = false;
-    private Color originalColor;
+    public Color originalColor;
 
-    private LManager lManager;
+    //private LManager lManager;
 
     public LayerMask m_LayerMask;
     
@@ -16,8 +16,8 @@ public class OverlapController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        lManager = GameObject.FindObjectOfType<LManager>();
-        originalColor = lManager.currentObj.transform.GetComponent<Renderer>().material.color;
+        // lManager = GameObject.FindObjectOfType<LManager>();
+        originalColor = LManager.Instance.currentObj.transform.GetComponent<Renderer>().material.color;
     }
 
     void FixedUpdate()
@@ -48,7 +48,7 @@ public class OverlapController : MonoBehaviour
     {
         //Use the OverlapBox to detect if there are any other colliders within this box area.
         //Use the GameObject's centre, half the size (as a radius) and rotation. This creates an invisible box around your GameObject.
-        var currentObj = lManager.currentObj;
+        var currentObj = LManager.Instance.currentObj;
         if(currentObj != null){
             Vector3 newScale = new Vector3(currentObj.transform.localScale.x - 0.01f, currentObj.transform.localScale.y - 0.01f, currentObj.transform.localScale.z - 0.01f);
             Collider[] hitColliders = Physics.OverlapBox(currentObj.transform.position, newScale / 2, Quaternion.identity, m_LayerMask);
@@ -57,10 +57,10 @@ public class OverlapController : MonoBehaviour
             // }
             if(hitColliders.Length > 0){
                 overlap = true;
-                lManager.currentObj.transform.GetComponent<Renderer>().material.color = Color.red;
+                LManager.Instance.currentObj.transform.GetComponent<Renderer>().material.color = Color.red;
             }else{
                 overlap = false;
-                lManager.currentObj.transform.GetComponent<Renderer>().material.color = originalColor;
+                LManager.Instance.currentObj.transform.GetComponent<Renderer>().material.color = originalColor;
             }
         }
     }
