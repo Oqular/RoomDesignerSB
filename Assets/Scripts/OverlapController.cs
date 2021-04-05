@@ -8,15 +8,12 @@ public class OverlapController : MonoBehaviour
     public bool overlap = false;
     public Color originalColor;
 
-    //private LManager lManager;
-
     public LayerMask m_LayerMask;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        // lManager = GameObject.FindObjectOfType<LManager>();
         originalColor = this.transform.GetComponent<Renderer>().material.color;
     }
 
@@ -24,25 +21,6 @@ public class OverlapController : MonoBehaviour
     {
         MyCollisions();
     }
-
-    // private void OnTriggerEnter(Collider other)
-    // {
-    //     if(!other.gameObject.CompareTag("immovable") && this.gameObject.tag == "Player" && !overlap){
-    //         overlap = true;
-    //         originalColor = lManager.currentObj.transform.GetComponent<Renderer>().material.color;
-    //         lManager.currentObj.transform.GetComponent<Renderer>().material.color = Color.red;
-    //     }
-        
-    // }
-
-    // void OnTriggerExit(Collider other)
-    // {
-    //     if(!other.gameObject.CompareTag("immovable") && this.gameObject.tag == "Player"){
-    //         overlap = false;
-    //         lManager.currentObj.transform.GetComponent<Renderer>().material.color = originalColor;
-    //     }
-        
-    // }
 
     void MyCollisions()
     {
@@ -52,9 +30,7 @@ public class OverlapController : MonoBehaviour
         if(currentObj != null){
             Vector3 newScale = new Vector3(currentObj.transform.localScale.x - 0.01f, currentObj.transform.localScale.y - 0.01f, currentObj.transform.localScale.z - 0.01f);
             Collider[] hitColliders = Physics.OverlapBox(currentObj.transform.position, newScale / 2, Quaternion.identity, m_LayerMask);
-            // if(!overlap){
-            //     originalColor = lManager.currentObj.transform.GetComponent<Renderer>().material.color;
-            // }
+            
             if(hitColliders.Length > 0){
                 overlap = true;
                 LManager.Instance.currentObj.transform.GetComponent<Renderer>().material.color = Color.red;

@@ -7,8 +7,6 @@ public class LManager : MonoBehaviour
     public static LManager Instance { get; private set;}
 
     [SerializeField]
-    private GameObject objPrefab;
-    [SerializeField]
     private FlexibleColorPicker colorPicker;
 
     public GameObject currentObj;
@@ -31,8 +29,6 @@ public class LManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //CreateObject();
-
         SelectExistingObj();
 
         if (currentObj)
@@ -59,7 +55,6 @@ public class LManager : MonoBehaviour
     }
     private void SnapToGrid(){
         if(Input.GetKey(KeyCode.LeftShift)){
-            //Debug.Log("Snapping");
             var x = Mathf.Round(currentObj.transform.position.x);
             var y = Mathf.Round(currentObj.transform.position.y);
             var z = Mathf.Round(currentObj.transform.position.z);
@@ -75,13 +70,9 @@ public class LManager : MonoBehaviour
             bool hit = Physics.Raycast(ray, out hitInfo);
             if(hit){
                 if(hitInfo.transform.gameObject.tag != "immovable"){
-                    //currentObj = hitInfo.transform.parent.gameObject;
-                    //var child = hitInfo.transform.gameObject;
-                    //var parent = child.transform.parent.gameObject;
                     selectedObj = hitInfo.transform.gameObject;
                     hitInfo.transform.gameObject.layer = 2;
                     OpenPanelBox(true, selectionPanel);
-                    //Debug.Log(child + "  " + parent);
                 }
             }
         
@@ -111,8 +102,6 @@ public class LManager : MonoBehaviour
         {
             var newY = hitInfo.point.y + currentObj.transform.localScale.y / 2;
             currentObj.transform.position = new Vector3(hitInfo.point.x, newY, hitInfo.point.z);
-            // Debug.Log(hitInfo.point);
-            // currentObj.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
         }
     }
 
@@ -126,8 +115,6 @@ public class LManager : MonoBehaviour
                 currentObj.tag = "Untagged";
                 currentObj = null;
             }
-            // GameObject child = currentObj.transform.GetChild(0).gameObject;
-            // child.layer = 0;
         }
     }
 
